@@ -8,11 +8,11 @@ using namespace std;
 
 string begingame;
 int playerclass;
-char presstocontinue;
 int monsters = 16;
 int miniboss = 2;
 int boss = 1;
 int village = 2;
+
 int atk = 0;
 int def = 0;
 int gold = 0;
@@ -20,13 +20,29 @@ int maxhp = 20;
 int hp = maxhp;
 int maxmana = 20;
 int mana = maxmana;
-int worldprogress = 0;
-int currentmap;
-int maxmap;
-int randomevent;
+int worldprogress = 1;
+int currentmap = 1;
+int maxmap = 0;
+int randomevent = 0;
 int LV = 0;
+int inventory[6] = {1,2,3,4,5,6};
 
-int emptyy;
+int monsteratk = 1;
+int monsterhp = 1;
+int monstercurrenthp = 1;
+int monstermax = 1;
+int g_reward = 1;
+int mana_reward = 1;
+int hp_reward = 1;
+int battleon = 1;
+int option = 1;
+
+int randatk = 1;
+int randesc = 1;
+int itemselected = 1;
+int randatkm = 1;
+
+int emptyy = 0;
 
 void setstats(int selecting, int chosen){
 
@@ -99,13 +115,144 @@ if(selecting == 1){
 }
 }
 
-void battle(){
+void itemuse(int item){
+    cout << endl << "Item test" << endl;
+    system("pause");
+    system("cls");
+}
 
+void battle(string monster = "", int monsternum = 0){
+    system("cls");
+    srand(time(0));
+    monsternum = rand() % 3 + 1;
+    monstermax = worldprogress;
+    switch(monsternum){ //setting statistics of monster depending on world from weakest to strongest
+case 1:
+    srand(time(0));
+    monsterhp = rand() % monstermax + 1;
+    monsterhp = monsterhp*6;
+    monsteratk = rand() % monstermax + 1;
+    g_reward = rand() % monstermax + 1;
+    g_reward = g_reward*20;
+    mana_reward = rand() % monstermax + 1;
+    mana_reward = mana_reward*10;
+    hp_reward = rand() % monstermax + 1;
+    hp_reward = hp_reward*10;
+    monstercurrenthp = monsterhp;
+    monster = "weak monster.";
+    break;
+case 2:
+    srand(time(0));
+    monsterhp = rand() % monstermax + 1;
+    monsterhp = monsterhp*12;
+    monsteratk = rand() % monstermax + 1;
+    monsteratk = monsteratk*2;
+    g_reward = rand() % monstermax + 1;
+    g_reward = g_reward*30;
+    mana_reward = rand() % monstermax + 1;
+    mana_reward = mana_reward*20;
+    hp_reward = rand() % monstermax + 1;
+    hp_reward = hp_reward*20;
+    monstercurrenthp = monsterhp;
+    monster = "strong monster.";
+    break;
+case 3:
+    srand(time(0));
+    monsterhp = rand() % monstermax + 1;
+    monsterhp = monsterhp*24;
+    monsteratk = rand() % monstermax + 1;
+    monsteratk = monsteratk*3;
+    g_reward = rand() % monstermax + 1;
+    g_reward = g_reward*40;
+    mana_reward = rand() % monstermax + 1;
+    mana_reward = mana_reward*30;
+    hp_reward = rand() % monstermax + 1;
+    hp_reward = hp_reward*30;
+    monstercurrenthp = monsterhp;
+    monster = "very strong monster.";
+    break;
+default:
+    break;
+    }
+    cout << "You have encountered a " << monster << endl;
+    while(battleon == 1){ //fighting loop
+        cout << endl << "The monsters current statistics are:" << endl;
+        cout << endl << monstercurrenthp << "/" << monsterhp << "|HP" << endl;
+        cout << endl << monsteratk << "|ATK" << endl << endl;
+        cout << endl << "What do you do?" << endl;
+    cout << endl << "| 1=FIGHT | 2=ITEM | 3=ESCAPE |" << endl;
+    cin >> option;
+        switch(option){
+    case 1:{
+        randatk = rand() % atk + 1;
+        cout << endl << "You dealt: " << randatk << " damage." << endl;
+        monstercurrenthp = monstercurrenthp - randatk;
+        cout << endl << "The monster has: " << monstercurrenthp << "/" << monsterhp << " HP" << endl;
+        system("pause");
+
+        randatkm = rand() % monsteratk + 1;
+        cout << endl << "It dealt: " << randatkm << " damage." << endl;
+        hp = hp - randatkm;
+        cout << endl << "You have: " << hp << "/" << maxhp << " HP" << endl;
+        system("pause");
+        system("cls");
+    break;
+    }
+    case 2:{
+        cout << endl << "Which item do you wish to use?" << endl;
+        cout << endl << "Your current items are:" << endl;
+        for(int i; i<=inventory[i]; i++){
+            cout << "Item" << i << ": " << inventory[i] << endl;
+        }
+        cin >> itemselected;
+        itemuse(itemselected);
+    break;
+    }
+    case 3:{
+        randesc = rand() % monstermax*100 + 1;
+        if(randesc <= 40){
+            cout << endl << "You escaped and left empty handed!" << endl;
+            battleon = 0;
+            g_reward = 0;
+            hp_reward = 0;
+            mana_reward = 0;
+        }else{
+        cout << "You did not escape. The monster attacked you instead.";
+        randatkm = rand() % monsteratk + 1;
+        cout << endl << "It dealt: " << randatkm << " damage." << endl;
+        hp = hp - randatkm;
+        cout << endl << "You have: " << hp << "/" << maxhp << " HP" << endl;
+        system("pause");
+        system("cls");
+        }
+    break;
+    }
+    default:
+        cout << endl << "What you have entered is wrong. Please re-enter your option." << endl;
+    system("pause");
+    system("cls");
+        break;
+}
+if(monstercurrenthp <= 0){
+    battleon = 0;
+    cout << endl << "You won! Your rewards are:" << endl;
+    cout << endl << g_reward << " Gold." << endl;
+    cout << endl << hp_reward << " Health." << endl;
+    if(playerclass >= 2){
+    cout << endl << mana_reward << " Mana." << endl;
+    }
+}
+
+if(hp <= 0){
+    battleon = 0;
+    cout << endl << "You lost." << endl;
+}
+}
 }
 
 void goldfound(int &goldies, int random){
     srand(time(0));
-    random = rand() % 10 + 1;
+    random = rand() % worldprogress*10 + 1;
     goldies = gold + random;
     cout << endl << "On your way, you found: " << random << " gold!" <<  endl;
 }
@@ -127,8 +274,8 @@ void ingame(){
     int monsters = 4;
     int miniboss = 0;
     int boss = 0;
-    system("pause"); //čeká na input klávesnice
-    system("cls"); // smaže text z cmd
+    system("pause"); //ceka na input klavesnice
+    system("cls"); // smaze text z cmd
     cout << endl << "STORY:";
     cout << endl << "Long ago... Two races ruled over earth: HUMANS AND MONSTERS" << endl;
     system("pause");
@@ -175,27 +322,28 @@ void ingame(){
     cout << endl << "And so... You march on." << endl;
     system("pause");
     system("cls");
-    do{ // cykl chození
+    do{ // cykl chozeni
         cout << endl << "You continue walking through. Your current progress is: " << currentmap << "/" << maxmap << "." <<  endl;
         cout << endl << "Your current statistics are:" <<  endl;
+        cout << endl << "WORLD | " << worldprogress <<  endl;
         cout << endl << "ATK | " << atk <<  endl;
         cout << endl << "DEF | " << def <<  endl;
         cout << endl << "GOLD | " << gold <<  endl;
         cout << endl << "HP | " << hp << "/" << maxhp <<  endl;
         cout << endl << "MANA | " << mana << "/" << maxmana <<  endl;
         cout << endl << "LV | " << LV <<  endl;
-        srand(time(0));  // inicializace generátoru náhodných čísel
-        randomevent = rand() % 100 + 1;  // čísla od 0 až do 100
+        cout << endl << "ITEMS | VVV |" << endl;
+        for(int i; i<=inventory[i]; i++){
+            cout << "Item " << i << ": " << inventory[i] << endl;
+        }
+        srand(time(0));  // inicializace generatoru nahodných cisel
+        randomevent = rand() % 100 + 1;  // cisla od 0 až do 100
         system("pause");
         currentmap++;
-        if(randomevent >= 0 && randomevent <= 20){
+        if(randomevent >= 0 && randomevent <= 40){
             battle();
-            cout << endl << "BATTLE INITIATE!...Oh wait, theres no battle function yet." << endl;
-            system("pause");
-            system("cls");
         }
-        if(randomevent > 20 && randomevent <= 80){
-            battle();
+        if(randomevent > 40 && randomevent <= 80){
             cout << endl << "Nothing interesting occured." << endl;
             system("pause");
             system("cls");
@@ -205,11 +353,18 @@ void ingame(){
             system("pause");
             system("cls");
         }
-    }while(currentmap != maxmap);
-    worldprogress++;
+    }while(!(currentmap == maxmap && hp >= 1));
     system("cls");
-    cout << endl << "DEMO END" << endl;
+    if(hp <= 0){
+        cout << endl << "GAME OVER.";
+    }
+    if(hp >= 1){
+        cout << endl << "DEMO END" << endl;
+    }
+    worldprogress++;
 }
+
+
 
 int main(){
     cout << "Welcome to..." << endl;
