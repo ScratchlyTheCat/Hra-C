@@ -3,12 +3,13 @@
 #include <ctime>
 #include <string>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
 string begingame;
 int playerclass;
-int monsters = 16;
+int monsters = 4;
 int miniboss = 2;
 int boss = 1;
 int village = 2;
@@ -26,21 +27,7 @@ int maxmap = 0;
 int randomevent = 0;
 int LV = 0;
 int inventory[6] = {1,2,3,4,5,6};
-
-int monsteratk = 1;
-int monsterhp = 1;
-int monstercurrenthp = 1;
-int monstermax = 1;
-int g_reward = 1;
-int mana_reward = 1;
-int hp_reward = 1;
-int battleon = 1;
-int option = 1;
-
-int randatk = 1;
-int randesc = 1;
-int itemselected = 1;
-int randatkm = 1;
+int shop[6] = {1,2,3,4,5,6};
 
 int emptyy = 0;
 
@@ -122,6 +109,22 @@ void itemuse(int item){
 }
 
 void battle(string monster = "", int monsternum = 0){
+
+int monsteratk = 1;
+int monsterhp = 1;
+int monstercurrenthp = 1;
+int monstermax = 1;
+int g_reward = 1;
+int mana_reward = 1;
+int hp_reward = 1;
+int battleon = 1;
+int option = 1;
+
+int randatk = 1;
+int randesc = 1;
+int itemselected = 1;
+int randatkm = 1;
+
     system("cls");
     srand(time(0));
     monsternum = rand() % 3 + 1;
@@ -202,7 +205,7 @@ default:
         cout << endl << "Which item do you wish to use?" << endl;
         cout << endl << "Your current items are:" << endl;
         for(int i; i<=inventory[i]; i++){
-            cout << "Item" << i << ": " << inventory[i] << endl;
+            cout << "Item " << i << ": " << inventory[i] << endl;
         }
         cin >> itemselected;
         itemuse(itemselected);
@@ -235,6 +238,9 @@ default:
 }
 if(monstercurrenthp <= 0){
     battleon = 0;
+    monsters--;
+    cout << endl << "THERE ARE" << monsters << "MONSTERS";
+    system("pause");
     cout << endl << "You won! Your rewards are:" << endl;
     cout << endl << g_reward << " Gold." << endl;
     cout << endl << hp_reward << " Health." << endl;
@@ -257,6 +263,7 @@ void goldfound(int &goldies, int random){
     cout << endl << "On your way, you found: " << random << " gold!" <<  endl;
 }
 
+
 void ingame(){
     cout << endl << "Before the story may begin, you must pick your class." << endl;
     cout << endl << "Please choose carefully as you will not be able to change it later." << endl;
@@ -271,9 +278,9 @@ void ingame(){
 
     setstats(1, playerclass);
 
-    int monsters = 4;
-    int miniboss = 0;
-    int boss = 0;
+    monsters = 4;
+    miniboss = 0;
+    boss = 0;
     system("pause"); //ceka na input klavesnice
     system("cls"); // smaze text z cmd
     cout << endl << "STORY:";
@@ -339,11 +346,19 @@ void ingame(){
         srand(time(0));  // inicializace generatoru nahodných cisel
         randomevent = rand() % 100 + 1;  // cisla od 0 až do 100
         system("pause");
-        currentmap++;
-        if(randomevent >= 0 && randomevent <= 40){
+        if(currentmap <= maxmap){
+            currentmap++;
+        }else{
+        cout << endl << "You may have made it to the end, but there are still " << monsters << " monsters blocking your way." << endl;
+        cout << endl << "You decide to run back to not get overwhelmed and beat them off one by one." << endl;
+        currentmap = 0;
+        system("pause");
+        }
+
+        if(randomevent >= 0 && randomevent <= 60){
             battle();
         }
-        if(randomevent > 40 && randomevent <= 80){
+        if(randomevent > 60 && randomevent <= 80){
             cout << endl << "Nothing interesting occured." << endl;
             system("pause");
             system("cls");
@@ -353,15 +368,30 @@ void ingame(){
             system("pause");
             system("cls");
         }
-    }while(!(currentmap == maxmap && hp >= 1));
+    }while(!(currentmap == maxmap && hp >= 1 && monsters <= 0));
     system("cls");
     if(hp <= 0){
         cout << endl << "GAME OVER.";
     }
-    if(hp >= 1){
-        cout << endl << "DEMO END" << endl;
-    }
     worldprogress++;
+    cout << endl << "In the distance, you see a small village." << endl;
+    system("pause");
+    cout << endl << "You think you might not make it out due to the number of monsters, but fortunately for you... These are friendly." << endl;
+    system("pause");
+    cout << endl << "You are unsure why, but you accept the warm embrace of this part of monsterkind nontheless." << endl;
+    system("pause");
+    cout << endl << "Walking through, you find yourself near a nice cozy shop and decide to check it out." << endl;
+    system("pause");
+    cout << endl << "You walk in the shop, and a familiar smile greets you." << endl;
+    system("pause");
+    cout << endl << "Michael: Ah! Good to see you pal. I see you've got yourself stuck down here too..." << endl;
+    system("pause");
+    cout << endl << "Michael: Dont worry buddy, i've got you covered, i already spoke to everyone around here." << endl;
+    system("pause");
+    cout << endl << "Michael: I've made a deal to fight against the evil part of their kind, and in return they let humans roam free here!" << endl;
+    system("pause");
+    cout << endl << "Michael: Honestly quite the miracle, i didn't believe it would work either but hey, im alive, so that's nice." << endl;
+    system("pause");
 }
 
 
