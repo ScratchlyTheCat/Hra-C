@@ -3,7 +3,6 @@
 #include <ctime>
 #include <string>
 #include <cmath>
-#include <vector>
 
 using namespace std;
 
@@ -26,11 +25,11 @@ int currentmap = 1;
 int maxmap = 0;
 int randomevent = 0;
 int LV = 0;
-int inventory[6] = {1,2,3,4,5,6};
-int shop[6] = {1,2,3,4,5,6};
+string inventory[6];
+int invsize = 6;
 
 int emptyy = 0;
-
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 void setstats(int selecting, int chosen){
 
 if(selecting == 1){
@@ -46,6 +45,7 @@ if(selecting == 1){
     maxmana = 0;
     mana = maxmana;
     LV = 1;
+    selecting = 0;
     break;
     }
     case 2:{
@@ -58,6 +58,7 @@ if(selecting == 1){
     maxmana = 0;
     mana = maxmana;
     LV = 1;
+    selecting = 0;
     break;
     }
     case 3:{
@@ -70,6 +71,7 @@ if(selecting == 1){
     maxmana = 150;
     mana = maxmana;
     LV = 1;
+    selecting = 0;
     break;
     }
     case 4:{
@@ -82,6 +84,7 @@ if(selecting == 1){
     maxmana = 250;
     mana = maxmana;
     LV = 1;
+    selecting = 0;
     break;
     }
     default:
@@ -99,17 +102,24 @@ if(selecting == 1){
     setstats(1, playerclass);
         break;
 }
+}else{
+cout << "test";
 }
 }
 
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 void itemuse(int item){
     cout << endl << "Item test" << endl;
     system("pause");
     system("cls");
 }
-
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 void battle(string monster = "", int monsternum = 0){
 
+int monsteramount = 1;
+srand(time(0));
+monsteramount = rand() % 3 + 1;
+int monsters_erased = monsteramount;
 int monsteratk = 1;
 int monsterhp = 1;
 int monstercurrenthp = 1;
@@ -204,7 +214,7 @@ default:
     case 2:{
         cout << endl << "Which item do you wish to use?" << endl;
         cout << endl << "Your current items are:" << endl;
-        for(int i; i<=inventory[i]; i++){
+        for(int i; i<=invsize; i++){
             cout << "Item " << i << ": " << inventory[i] << endl;
         }
         cin >> itemselected;
@@ -237,9 +247,10 @@ default:
         break;
 }
 if(monstercurrenthp <= 0){
+    monsteramount--;
+    if(monsteramount <= 0){
     battleon = 0;
-    monsters--;
-    cout << endl << "THERE ARE" << monsters << "MONSTERS";
+    monsters = monsters - monsters_erased;
     system("pause");
     cout << endl << "You won! Your rewards are:" << endl;
     cout << endl << g_reward << " Gold." << endl;
@@ -247,6 +258,10 @@ if(monstercurrenthp <= 0){
     if(playerclass >= 2){
     cout << endl << mana_reward << " Mana." << endl;
     }
+}else{
+cout << endl << "You have encountered another monster of the same type!" << endl;
+monstercurrenthp = monsterhp;
+}
 }
 
 if(hp <= 0){
@@ -255,15 +270,74 @@ if(hp <= 0){
 }
 }
 }
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+void store(string inventory[], int invsize, int gold, int worldprogress){
+int inshop = 0;
+system("cls");
+cout << endl << "Welcome to the shop!" << endl;
+cout << endl << "GOLD | " << gold <<  endl;
+cout << endl << "ITEMS | VVV |" << endl;
+        for(int i = 0; i+1<=invsize; i++){
+            cout << "Item " << i +1 << ": " << inventory[i] << endl;
+        }
 
+cout << endl << "Do you wish to leave, or to buy? |1 (Buy) / 0 (Leave)|" << endl;
+cin >> inshop;
+while(inshop == 1){
+switch(worldprogress){
+
+case 1:{ //WORLD 1 ITEMS
+int prices[9] = {5, 8, 12, 20, 15, 10, 25, 25, 15};
+string shopitem[9] = {"|Healing Potion|", "|Mana Potion|", "|Weak Helmet|", "|Weak Chestplate|", "|Weak Leggings|", "|Weak Boots|", "|ATK Boost Ring|", "|DEF Boost Ring|", "|Weak Weapon|", };
+int currentitem = 0;
+cout << endl << "SHOP ITEMS | VVV |" << endl;
+for(int i = 0; i+1<=prices[i]; i++){
+            cout << "Price: " << prices[i] << " Gold =";
+            cout << " Item " << i +1 << ": " << shopitem[i] << endl;
+        }
+    cout << endl << "Which item do you want to buy? (Insert from 1 to 9 to pick, insert anything else to cancel.)" << endl;
+    cin >> currentitem;
+    currentitem = currentitem-1;
+    if(currentitem >= 0 && currentitem <= 9 && gold >= prices[currentitem]){
+        int slot = 0;
+        cout << endl << "Buying: " << shopitem[currentitem] << " for " << prices[currentitem];
+        gold = gold - prices[currentitem];
+        do{
+        cout << endl << "Select which inventory slot to replace:" << endl;
+        cin >> slot;
+        }while(!(slot >= 1 && slot <= 6));
+        slot--;
+        inventory[slot] = shopitem[currentitem];
+        setstats(0, playerclass);
+        }else{
+    cout << endl << "Buying cancelled!" << endl;
+    system("pause");
+    }
+}
+//WORLD 1 ITEMS
+
+default:{
+    break;
+}
+}
+system("cls");
+cout << endl << "GOLD | " << gold <<  endl;
+cout << endl << "ITEMS | VVV |" << endl;
+        for(int i = 0; i+1<=invsize; i++){
+            cout << "Item " << i +1 << ": " << inventory[i] << endl;
+        }
+cout << endl << "Do you wish to leave, or to buy? |1 (Buy) / 0 (Leave)|" << endl;
+cin >> inshop;
+}
+}
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 void goldfound(int &goldies, int random){
     srand(time(0));
     random = rand() % worldprogress*10 + 1;
     goldies = gold + random;
     cout << endl << "On your way, you found: " << random << " gold!" <<  endl;
 }
-
-
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 void ingame(){
     cout << endl << "Before the story may begin, you must pick your class." << endl;
     cout << endl << "Please choose carefully as you will not be able to change it later." << endl;
@@ -340,12 +414,14 @@ void ingame(){
         cout << endl << "MANA | " << mana << "/" << maxmana <<  endl;
         cout << endl << "LV | " << LV <<  endl;
         cout << endl << "ITEMS | VVV |" << endl;
-        for(int i; i<=inventory[i]; i++){
-            cout << "Item " << i << ": " << inventory[i] << endl;
+        for(int i = 0; i+1<=invsize; i++){
+            cout << "Item " << i +1 << ": " << inventory[i] << endl;
         }
+
         srand(time(0));  // inicializace generatoru nahodných cisel
         randomevent = rand() % 100 + 1;  // cisla od 0 až do 100
         system("pause");
+        store(inventory, invsize, gold, worldprogress);
         if(currentmap <= maxmap){
             currentmap++;
         }else{
@@ -355,10 +431,10 @@ void ingame(){
         system("pause");
         }
 
-        if(randomevent >= 0 && randomevent <= 60){
+        if(randomevent >= 0 && randomevent <= 50){
             battle();
         }
-        if(randomevent > 60 && randomevent <= 80){
+        if(randomevent > 50 && randomevent <= 80){
             cout << endl << "Nothing interesting occured." << endl;
             system("pause");
             system("cls");
@@ -392,8 +468,9 @@ void ingame(){
     system("pause");
     cout << endl << "Michael: Honestly quite the miracle, i didn't believe it would work either but hey, im alive, so that's nice." << endl;
     system("pause");
+    store(inventory, invsize, gold, worldprogress);
 }
-
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 int main(){
