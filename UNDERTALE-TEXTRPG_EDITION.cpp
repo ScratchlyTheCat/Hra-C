@@ -251,13 +251,14 @@ if(monstercurrenthp <= 0){
     if(monsteramount <= 0){
     battleon = 0;
     monsters = monsters - monsters_erased;
-    system("pause");
     cout << endl << "You won! Your rewards are:" << endl;
     cout << endl << g_reward << " Gold." << endl;
     cout << endl << hp_reward << " Health." << endl;
     if(playerclass >= 2){
     cout << endl << mana_reward << " Mana." << endl;
     }
+    system("pause");
+    system("cls");
 }else{
 cout << endl << "You have encountered another monster of the same type!" << endl;
 monstercurrenthp = monsterhp;
@@ -421,7 +422,6 @@ void ingame(){
         srand(time(0));  // inicializace generatoru nahodných cisel
         randomevent = rand() % 100 + 1;  // cisla od 0 až do 100
         system("pause");
-        store(inventory, invsize, gold, worldprogress);
         if(currentmap <= maxmap){
             currentmap++;
         }else{
@@ -431,10 +431,10 @@ void ingame(){
         system("pause");
         }
 
-        if(randomevent >= 0 && randomevent <= 50){
+        if(randomevent >= 0 && randomevent <= 30){
             battle();
         }
-        if(randomevent > 50 && randomevent <= 80){
+        if(randomevent > 30 && randomevent <= 80){
             cout << endl << "Nothing interesting occured." << endl;
             system("pause");
             system("cls");
