@@ -21,12 +21,21 @@ int hp = maxhp;
 int maxmana = 20;
 int mana = maxmana;
 int worldprogress = 1;
+int areaprogress = 1;
 int currentmap = 1;
 int maxmap = 0;
 int randomevent = 0;
 int LV = 0;
 string inventory[6];
 int invsize = 6;
+
+//5 statistics
+//1 = NAME/ 2=+ATK/ 3=+DEF/ 4=ISHEAL>0 THEN +HEAL/ 5=ISMANA>0 THEN +MANA/ 6=SLOT/ 7=TYPE (0=LISTS +MANA OR +HEAL OR BOTH USING IF ELSE, 1=LISTS ATK AND DEF)
+string teste1[2][5] = {
+        {"|EXAMPLE|", "20", "30", "20", "30"},
+        {"|EXAMPLE2|", "25", "35", "15", "40"}
+    };
+int teste2 = stoi(teste1[0][1]);
 
 int emptyy = 0;
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -272,10 +281,10 @@ if(hp <= 0){
 }
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
-void store(string inventory[], int invsize, int gold, int worldprogress){
+void store(string inventory[], int invsize, int gold, int worldprogress, int areaprogress){
 int inshop = 0;
 system("cls");
-cout << endl << "Welcome to the shop!" << endl;
+cout << endl << "Welcome to the area" << areaprogress << "shop!" << endl;
 cout << endl << "GOLD | " << gold <<  endl;
 cout << endl << "ITEMS | VVV |" << endl;
         for(int i = 0; i+1<=invsize; i++){
@@ -450,6 +459,7 @@ void ingame(){
         cout << endl << "GAME OVER.";
     }
     worldprogress++;
+    areaprogress++;
     cout << endl << "In the distance, you see a small village." << endl;
     system("pause");
     cout << endl << "You think you might not make it out due to the number of monsters, but fortunately for you... These are friendly." << endl;
@@ -468,12 +478,17 @@ void ingame(){
     system("pause");
     cout << endl << "Michael: Honestly quite the miracle, i didn't believe it would work either but hey, im alive, so that's nice." << endl;
     system("pause");
-    store(inventory, invsize, gold, worldprogress);
+    store(inventory, invsize, gold, worldprogress, areaprogress);
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 int main(){
+    teste2 = teste2 + 3;
+    cout << teste2;
+    cout << teste1[0][0];
+    cout << teste1[1][0];
+    cout << teste1[0][1];
     cout << "Welcome to..." << endl;
     cout << "UNDERTALE: TEXTRPG EDITION" << endl;
     cout << "Begin game? [Y/N]" << endl;
