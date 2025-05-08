@@ -20,26 +20,29 @@ int maxhp = 20;
 int hp = maxhp;
 int maxmana = 20;
 int mana = maxmana;
+int manaBOOST = 3;
 int worldprogress = 1;
 int areaprogress = 1;
 int currentmap = 1;
 int maxmap = 0;
 int randomevent = 0;
 int LV = 0;
-string inventory[6];
+string inventory[6][7]= {
+{"|Healing Potion|", "0", "0", "15", "0", "", "0"},
+{"|Mana Potion|", "0", "0", "0", "40", "", "0"},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""}
+};
 int invsize = 6;
 
-//5 statistics
+//7 statistics
 //1 = NAME/ 2=+ATK/ 3=+DEF/ 4=ISHEAL>0 THEN +HEAL/ 5=ISMANA>0 THEN +MANA/ 6=SLOT/ 7=TYPE (0=LISTS +MANA OR +HEAL OR BOTH USING IF ELSE, 1=LISTS ATK AND DEF)
-string teste1[2][5] = {
-        {"|EXAMPLE|", "20", "30", "20", "30"},
-        {"|EXAMPLE2|", "25", "35", "15", "40"}
-    };
-int teste2 = stoi(teste1[0][1]);
 
 int emptyy = 0;
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
-void setstats(int selecting, int chosen){
+void setstats(int selecting, int chosen, int slot, int atk2 = 0, int def2 = 0){
 
 if(selecting == 1){
 
@@ -102,23 +105,65 @@ if(selecting == 1){
     system("pause");
     system("cls");
     cout << endl << "CLASSES: SWORDSMAN, MECHATRON, PEACEBRINGER, DUSTSETTLER";
-    cout << endl << "1|SWORDSMAN:| ATK 5| DEF 3| HP 20| NO MAGIC| 'Classic and reliable. Wields a simple sword.'"; //relies on you leveling up
-    cout << endl << "2|MECHATRON:| ATK 2| DEF 8| HP 15| NO MAGIC| 'Benefits heavily from his own inventions.'"; //relies heavily on shop
+    cout << endl << "1|SWORDSMAN:| ATK 5| DEF 3| HP 20| NO MAGIC| 'Classic and reliable. Wields a simple sword.'"; //relies on you leveling up (+1 lv = +atk +def)
+    cout << endl << "2|MECHATRON:| ATK 2| DEF 8| HP 15| NO MAGIC| 'Benefits heavily from his own inventions.'"; //relies heavily on shop (you defend and eat coins up till you can afford op items)
     cout << endl << "3|PEACEBRINGER:| ATK 1| DEF 1| HP 50| 150 MANA| 'Peace brings him control.'"; //will roll better chances on his attacks the less hp the enemies have
+    //(you ramp up atk overtime, for every hit you do you gain more atk, example: 5 atk hit gives you +5 to your attack, this stacks.)
+    //(HOWEVER, after 15+ atk you get a debuff of (INSERT VARIABLE HERE)*2 per turn, till your atk is lower than 10 again, effectively making a sine wave of atk dmg)
     cout << endl << "4|DUSTSETTLER:| ATK 3| DEF 3| HP 10| 250 MANA| 'As the dust settles... He moves on.'"; //will gain a dmg and hp boost that stacks if you go to the next encounter right away
+    //you CANNOT buy anything from the shop, however you gain +2 atk and +2 def after EVERY fight, and 2x rewards. this means you farm small battles to bassicaly heal yourself
     cout << endl << "Enter your desired class:";
     cin >> playerclass;
-    setstats(1, playerclass);
+    setstats(1, playerclass, 0, 0, 0);
         break;
 }
-}else{
-cout << "test";
+}else if(selecting == 0){ //set stats of armor
+atk = atk + atk2;
+def = def + def2;
+}else{ //set stats of armor
+atk = atk - atk2;
+def = def - def2;
 }
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 void itemuse(int item){
-    cout << endl << "Item test" << endl;
+    int choice = 0;
+    do{
+    cout << endl << "Your current items are:" << endl;
+    for(int i = 0; i+1<=invsize; i++){
+            cout << "Item " << i +1 << ": " << inventory[i][0] << endl;
+        }
+    cout << endl << "Which item would you like to use? Enter 1-6." << endl;
+    cin >> choice;
+    }while(!(choice >= 1 && choice <= 6));
+    choice--;
+    if(inventory[choice][0] != ""){
+    int HEALAMOUNT = stoi(inventory[choice][3]);
+    int MANAAMOUNT = stoi(inventory[choice][4]);
+    int TYPE = stoi(inventory[choice][6]);
+    if(TYPE == 0){
+        cout << "Using item: " << choice + 1 << endl;
+    for(int j = 0; j<=6; j++){
+        inventory[choice][j] = "";
+        }
+        if(HEALAMOUNT > 0){
+            hp = hp + HEALAMOUNT;
+            if(hp > maxhp){
+                hp = maxhp;
+            }
+        }else{
+            mana = mana + MANAAMOUNT;
+            if(mana > maxmana){
+                mana = maxmana;
+            }
+        }
+    }else{
+    cout << endl << "Cannot use this item." << endl;
+    }
+    }else{
+    cout << endl << "Item slot is empty." << endl;
+    }
     system("pause");
     system("cls");
 }
@@ -198,11 +243,18 @@ default:
     }
     cout << "You have encountered a " << monster << endl;
     while(battleon == 1){ //fighting loop
+        mana = mana + 10;
+        if(mana > maxmana){
+            mana = maxmana;
+        }
         cout << endl << "The monsters current statistics are:" << endl;
         cout << endl << monstercurrenthp << "/" << monsterhp << "|HP" << endl;
-        cout << endl << monsteratk << "|ATK" << endl << endl;
+        cout << endl << monsteratk << "|ATK" << endl;
+        cout << endl << "''-|-|-|-|-|-|-|-|-|-|-''" << endl;
+        cout << endl << "HP | " << hp << "/" << maxhp <<  endl;
+        cout << endl << "MANA | " << mana << "/" << maxmana <<  endl;
         cout << endl << "What do you do?" << endl;
-    cout << endl << "| 1=FIGHT | 2=ITEM | 3=ESCAPE |" << endl;
+    cout << endl << "| 1=FIGHT | 2=ITEM | 3=MANA | 4=ESCAPE |" << endl;
     cin >> option;
         switch(option){
     case 1:{
@@ -213,24 +265,61 @@ default:
         system("pause");
 
         randatkm = rand() % monsteratk + 1;
-        cout << endl << "It dealt: " << randatkm << " damage." << endl;
-        hp = hp - randatkm;
+        randatkm = randatkm + 4;
+        randatkm * monsteratk;
+        int randatkm2 = 0;
+        randatkm2 = randatkm - def;
+        if(randatkm2 < 0){
+            randatkm2 = 0;
+        }
+        cout << endl << "It dealt: " << randatkm2 << " damage." << endl;
+        hp = hp - randatkm2;
         cout << endl << "You have: " << hp << "/" << maxhp << " HP" << endl;
         system("pause");
         system("cls");
     break;
     }
     case 2:{
-        cout << endl << "Which item do you wish to use?" << endl;
-        cout << endl << "Your current items are:" << endl;
-        for(int i; i<=invsize; i++){
-            cout << "Item " << i << ": " << inventory[i] << endl;
-        }
-        cin >> itemselected;
         itemuse(itemselected);
     break;
     }
     case 3:{
+        if(mana >= 1){
+        cout << endl << "State how much mana you want to use from 1 to 100." << endl;
+        cout << endl << "The closer to 100 you are, the less of a chance you have to miss." << endl;
+        int manachance = 0;
+        cin >> manachance;
+        int manachanceanti = 101 - manachance;
+        int manachancehit = 0;
+        manachancehit = rand() % manachance + 1;
+        if(manachancehit <= 15){
+        randatk = rand() % 10 + 1;
+        if(randatk <= 5){
+            randatk = 5;
+        }
+        mana = mana - manachance;
+        if(mana <= 0){
+            mana = 0;
+        }
+        randatk * manaBOOST;
+        cout << endl << "You dealt: " << randatk << " damage." << endl;
+        monstercurrenthp = monstercurrenthp - randatk;
+        cout << endl << "The monster has: " << monstercurrenthp << "/" << monsterhp << " HP" << endl;
+        }
+        system("pause");
+
+        randatkm = rand() % monsteratk + 1;
+        cout << endl << "It dealt: " << randatkm << " damage." << endl;
+        hp = hp - randatkm;
+        cout << endl << "You have: " << hp << "/" << maxhp << " HP" << endl;
+        }else{
+        cout << endl << "You dont have enough mana to use spells." << endl;
+        }
+        system("pause");
+        system("cls");
+    break;
+    }
+    case 4:{
         randesc = rand() % monstermax*100 + 1;
         if(randesc <= 40){
             cout << endl << "You escaped and left empty handed!" << endl;
@@ -265,6 +354,15 @@ if(monstercurrenthp <= 0){
     cout << endl << hp_reward << " Health." << endl;
     if(playerclass >= 2){
     cout << endl << mana_reward << " Mana." << endl;
+    gold = gold + g_reward;
+    hp = hp + hp_reward;
+    mana = mana + mana_reward;
+    }
+    if(hp > maxhp){
+        hp = maxhp;
+    }
+    if(mana > maxmana){
+        mana = maxmana;
     }
     system("pause");
     system("cls");
@@ -281,44 +379,97 @@ if(hp <= 0){
 }
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
-void store(string inventory[], int invsize, int gold, int worldprogress, int areaprogress){
+void store(string inventory[6][7], int invsize, int gold, int worldprogress, int areaprogress){
 int inshop = 0;
 system("cls");
-cout << endl << "Welcome to the area" << areaprogress << "shop!" << endl;
+cout << endl << "Welcome to the area " << areaprogress << " shop!" << endl;
 cout << endl << "GOLD | " << gold <<  endl;
 cout << endl << "ITEMS | VVV |" << endl;
         for(int i = 0; i+1<=invsize; i++){
-            cout << "Item " << i +1 << ": " << inventory[i] << endl;
+            cout << "Item " << i +1 << ": " << inventory[i][0];
+            if(inventory[i][0] != ""){
+            int TYPE = stoi(inventory[i][6]);
+            int HEALAMOUNT = stoi(inventory[i][3]);
+            int MANAAMOUNT = stoi(inventory[i][4]);
+            if(TYPE == 0 && HEALAMOUNT >= 1){
+                cout << " Heals: " << inventory[i][3] << " HP";
+            }else if(TYPE == 0 && MANAAMOUNT >= 1){
+                cout << " Refills: " << inventory[i][4] << " MANA";
+            }else if(TYPE == 1){
+                cout << " ATK: " << inventory[i][1] << " DEF: " << inventory[i][2];
+            }else if(TYPE == 2){
+                cout << " ADDED MAX HP: " << inventory[i][2];
+            }
+            }
+            cout << endl;
         }
 
-cout << endl << "Do you wish to leave, or to buy? |1 (Buy) / 0 (Leave)|" << endl;
+cout << endl << "Do you wish to leave, or to buy? |2 (Remove) / 1 (Buy) / 0 (Leave)|" << endl;
+cout << endl << "!;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=;!" << endl;
 cin >> inshop;
-while(inshop == 1){
+while(inshop == 1 || inshop == 2){
+
+    if(inshop == 1){
 switch(worldprogress){
 
 case 1:{ //WORLD 1 ITEMS
-int prices[9] = {5, 8, 12, 20, 15, 10, 25, 25, 15};
-string shopitem[9] = {"|Healing Potion|", "|Mana Potion|", "|Weak Helmet|", "|Weak Chestplate|", "|Weak Leggings|", "|Weak Boots|", "|ATK Boost Ring|", "|DEF Boost Ring|", "|Weak Weapon|", };
+//7 statistics
+//1 = NAME/ 2=+ATK/ 3=+DEF/ 4=ISHEAL>0 THEN +HEAL/ 5=ISMANA>0 THEN +MANA/ 6=SLOT/ 7=TYPE (0=LISTS +MANA OR +HEAL OR BOTH USING IF ELSE, 1=LISTS ATK AND DEF, 2=+MAXHP(adds 20+maxhp upon use) )
+int prices[9] = {5, 8, 12, 20, 15, 10, 20, 30};
+string shopitem[8][7] = {
+        {"|Healing Potion|", "0", "0", "15", "0", "", "0"},
+        {"|Mana Potion|", "0", "0", "0", "40", "", "0"},
+        {"|Weak Helmet|", "0", "3", "0", "0", "", "1"},
+        {"|Weak Chestplate|", "0", "7", "0", "0", "", "1"},
+        {"|Weak Leggings|", "0", "5", "0", "0", "", "1"},
+        {"|Weak Boots|", "0", "2", "0", "0", "", "1"},
+        {"|Weak Weapon|", "8", "0", "0", "0", "", "1"},
+        {"|Health Crystal|", "0", "20", "0", "0", "", "2"}
+    };
 int currentitem = 0;
 cout << endl << "SHOP ITEMS | VVV |" << endl;
 for(int i = 0; i+1<=prices[i]; i++){
             cout << "Price: " << prices[i] << " Gold =";
-            cout << " Item " << i +1 << ": " << shopitem[i] << endl;
+            cout << " Item " << i +1 << ": " << shopitem[i][0];
+            int TYPE = stoi(shopitem[i][6]);
+            int HEALAMOUNT = stoi(shopitem[i][3]);
+            int MANAAMOUNT = stoi(shopitem[i][4]);
+            if(TYPE == 0 && HEALAMOUNT >= 1){
+                cout << " Heals: " << shopitem[i][3] << " HP";
+            }else if(TYPE == 0 && MANAAMOUNT >= 1){
+                cout << " Refills: " << shopitem[i][4] << " MANA";
+            }else if(TYPE == 1){
+                cout << " ATK: " << shopitem[i][1] << " DEF: " << shopitem[i][2];
+            }else if(TYPE == 2){
+                cout << " ADDED MAX HP: " << shopitem[i][2];
+            }
+            cout << endl;
         }
     cout << endl << "Which item do you want to buy? (Insert from 1 to 9 to pick, insert anything else to cancel.)" << endl;
     cin >> currentitem;
     currentitem = currentitem-1;
     if(currentitem >= 0 && currentitem <= 9 && gold >= prices[currentitem]){
         int slot = 0;
-        cout << endl << "Buying: " << shopitem[currentitem] << " for " << prices[currentitem];
+        cout << endl << "Buying: " << shopitem[currentitem][0] << " for " << prices[currentitem];
         gold = gold - prices[currentitem];
+            if(currentitem != 7){
         do{
         cout << endl << "Select which inventory slot to replace:" << endl;
         cin >> slot;
         }while(!(slot >= 1 && slot <= 6));
         slot--;
-        inventory[slot] = shopitem[currentitem];
-        setstats(0, playerclass);
+        for(int j = 0; j<=6; j++){
+        inventory[slot][j] = shopitem[currentitem][j];
+        }
+        int ATTACK = stoi(shopitem[currentitem][1]);
+        int DEFENSE = stoi(shopitem[currentitem][2]);
+        setstats(0, playerclass, slot, ATTACK, DEFENSE);
+            }else{
+            int DEFENSE = stoi(shopitem[currentitem][2]);
+            maxhp = maxhp + DEFENSE;
+            cout << endl << "Max HP increased by " << DEFENSE << "!" << endl;
+            system("pause");
+            }
         }else{
     cout << endl << "Buying cancelled!" << endl;
     system("pause");
@@ -330,14 +481,71 @@ default:{
     break;
 }
 }
-system("cls");
+system("cls"); //repeat
 cout << endl << "GOLD | " << gold <<  endl;
 cout << endl << "ITEMS | VVV |" << endl;
         for(int i = 0; i+1<=invsize; i++){
-            cout << "Item " << i +1 << ": " << inventory[i] << endl;
+            cout << "Item " << i +1 << ": " << inventory[i][0];
+            if(inventory[i][0] != ""){
+            int TYPE = stoi(inventory[i][6]);
+            int HEALAMOUNT = stoi(inventory[i][3]);
+            int MANAAMOUNT = stoi(inventory[i][4]);
+            if(TYPE == 0 && HEALAMOUNT >= 1){
+                cout << " Heals: " << inventory[i][3] << " HP";
+            }else if(TYPE == 0 && MANAAMOUNT >= 1){
+                cout << " Refills: " << inventory[i][4] << " MANA";
+            }else if(TYPE == 1){
+                cout << " ATK: " << inventory[i][1] << " DEF: " << inventory[i][2];
+            }else if(TYPE == 2){
+                cout << " ADDED MAX HP: " << inventory[i][2];
+            }
+            }
+            cout << endl;
         }
-cout << endl << "Do you wish to leave, or to buy? |1 (Buy) / 0 (Leave)|" << endl;
+cout << endl << "Do you wish to leave, or to buy? |2 (Remove) / 1 (Buy) / 0 (Leave)|" << endl;
+cout << endl << "!;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=;!" << endl;
 cin >> inshop;
+}else{ //remove items section
+cout << endl << "Which item would you like to remove?" << endl;
+int slot = 0;
+do{
+cin >> slot;
+}while(!(slot >= 1 && slot <= 6));
+slot--;
+int ATTACK = stoi(inventory[slot][1]);
+int DEFENSE = stoi(inventory[slot][2]);
+setstats(2, playerclass, slot, ATTACK, DEFENSE);
+for(int j = 0; j<=6; j++){
+        inventory[slot][j] = "";
+        }
+system("cls");
+slot++;
+cout << "Item " << slot << " removed.";
+cout << endl << "GOLD | " << gold <<  endl;
+cout << endl << "ITEMS | VVV |" << endl;
+        for(int i = 0; i+1<=invsize; i++){
+            cout << "Item " << i +1 << ": " << inventory[i][0];
+            if(inventory[i][0] != ""){
+            int TYPE = stoi(inventory[i][6]);
+            int HEALAMOUNT = stoi(inventory[i][3]);
+            int MANAAMOUNT = stoi(inventory[i][4]);
+            if(TYPE == 0 && HEALAMOUNT >= 1){
+                cout << " Heals: " << inventory[i][3] << " HP";
+            }else if(TYPE == 0 && MANAAMOUNT >= 1){
+                cout << " Refills: " << inventory[i][4] << " MANA";
+            }else if(TYPE == 1){
+                cout << " ATK: " << inventory[i][1] << " DEF: " << inventory[i][2];
+            }else if(TYPE == 2){
+                cout << " ADDED MAX HP: " << inventory[i][2];
+            }
+            }
+            cout << endl;
+        }
+cout << endl << "Do you wish to leave, or to buy? |2 (Remove) / 1 (Buy) / 0 (Leave)|" << endl;
+cout << endl << "!;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=;!" << endl;
+cin >> inshop;
+}
+
 }
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -360,9 +568,9 @@ void ingame(){
     cout << endl << "Enter your desired class:";
     cin >> playerclass;
 
-    setstats(1, playerclass);
+    setstats(1, playerclass,0 ,0 ,0);
 
-    monsters = 4;
+    monsters = 1;
     miniboss = 0;
     boss = 0;
     system("pause"); //ceka na input klavesnice
@@ -413,6 +621,7 @@ void ingame(){
     cout << endl << "And so... You march on." << endl;
     system("pause");
     system("cls");
+    int goback = 0;
     do{ // cykl chozeni
         cout << endl << "You continue walking through. Your current progress is: " << currentmap << "/" << maxmap << "." <<  endl;
         cout << endl << "Your current statistics are:" <<  endl;
@@ -425,7 +634,7 @@ void ingame(){
         cout << endl << "LV | " << LV <<  endl;
         cout << endl << "ITEMS | VVV |" << endl;
         for(int i = 0; i+1<=invsize; i++){
-            cout << "Item " << i +1 << ": " << inventory[i] << endl;
+            cout << "Item " << i +1 << ": " << inventory[i][0] << endl;
         }
 
         srand(time(0));  // inicializace generatoru nahodných cisel
@@ -433,11 +642,21 @@ void ingame(){
         system("pause");
         if(currentmap <= maxmap){
             currentmap++;
-        }else{
+        }else if (currentmap >= maxmap && monsters >= 0){
         cout << endl << "You may have made it to the end, but there are still " << monsters << " monsters blocking your way." << endl;
         cout << endl << "You decide to run back to not get overwhelmed and beat them off one by one." << endl;
         currentmap = 0;
         system("pause");
+        }
+        if(currentmap >= maxmap && monsters <= 0){
+            cout << endl << "You made it to the end and all monsters have been wiped, however you may choose to continue to grind here if you wish." << endl;
+            cout << endl << "|1 Go Back / 2 Continue In Your Journey|" << endl;
+            do{
+            cin >> goback;
+            }while(!(goback == 1 || goback == 2));
+            if(goback == 1){
+            currentmap = 0;
+            }
         }
 
         if(randomevent >= 0 && randomevent <= 30){
@@ -453,13 +672,14 @@ void ingame(){
             system("pause");
             system("cls");
         }
-    }while(!(currentmap == maxmap && hp >= 1 && monsters <= 0));
+    }while(!(currentmap == maxmap && hp >= 1 && monsters <= 0 && goback == 2));
     system("cls");
     if(hp <= 0){
         cout << endl << "GAME OVER.";
     }
     worldprogress++;
     areaprogress++;
+    goback = 0;
     cout << endl << "In the distance, you see a small village." << endl;
     system("pause");
     cout << endl << "You think you might not make it out due to the number of monsters, but fortunately for you... These are friendly." << endl;
@@ -484,11 +704,6 @@ void ingame(){
 
 
 int main(){
-    teste2 = teste2 + 3;
-    cout << teste2;
-    cout << teste1[0][0];
-    cout << teste1[1][0];
-    cout << teste1[0][1];
     cout << "Welcome to..." << endl;
     cout << "UNDERTALE: TEXTRPG EDITION" << endl;
     cout << "Begin game? [Y/N]" << endl;
