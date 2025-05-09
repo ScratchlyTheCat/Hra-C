@@ -26,10 +26,14 @@ int areaprogress = 1;
 int currentmap = 1;
 int maxmap = 0;
 int randomevent = 0;
+int expcurrent = 0;
+int expneed = 4;
 int LV = 0;
+
+int atkboost = 0;
 string inventory[6][7]= {
-{"|Healing Potion|", "0", "0", "15", "0", "", "0"},
-{"|Mana Potion|", "0", "0", "0", "40", "", "0"},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
     {"", "", "", "", "", "", ""},
     {"", "", "", "", "", "", ""},
     {"", "", "", "", "", "", ""},
@@ -63,7 +67,7 @@ if(selecting == 1){
     case 2:{
     cout << endl << "You have picked: MECHATRON." << endl;
     atk = 2;
-    def = 8;
+    def = 4;
     gold = 0;
     maxhp = 15;
     hp = maxhp;
@@ -106,11 +110,11 @@ if(selecting == 1){
     system("cls");
     cout << endl << "CLASSES: SWORDSMAN, MECHATRON, PEACEBRINGER, DUSTSETTLER";
     cout << endl << "1|SWORDSMAN:| ATK 5| DEF 3| HP 20| NO MAGIC| 'Classic and reliable. Wields a simple sword.'"; //relies on you leveling up (+1 lv = +atk +def)
-    cout << endl << "2|MECHATRON:| ATK 2| DEF 8| HP 15| NO MAGIC| 'Benefits heavily from his own inventions.'"; //relies heavily on shop (you defend and eat coins up till you can afford op items)
-    cout << endl << "3|PEACEBRINGER:| ATK 1| DEF 1| HP 50| 150 MANA| 'Peace brings him control.'"; //will roll better chances on his attacks the less hp the enemies have
+    cout << endl << "2|MECHATRON:| ATK 2| DEF 4| HP 15| NO MAGIC| 'Benefits heavily from inventions.'"; //relies heavily on shop (you defend and eat coins up till you can afford op items)
+    cout << endl << "3|PEACEBRINGER:| ATK 1| DEF 1| HP 50| 150 MANA| 'Violence brings it control.'"; //will roll better chances on his attacks the less hp the enemies have
     //(you ramp up atk overtime, for every hit you do you gain more atk, example: 5 atk hit gives you +5 to your attack, this stacks.)
     //(HOWEVER, after 15+ atk you get a debuff of (INSERT VARIABLE HERE)*2 per turn, till your atk is lower than 10 again, effectively making a sine wave of atk dmg)
-    cout << endl << "4|DUSTSETTLER:| ATK 3| DEF 3| HP 10| 250 MANA| 'As the dust settles... He moves on.'"; //will gain a dmg and hp boost that stacks if you go to the next encounter right away
+    cout << endl << "4|DUSTSETTLER:| ATK 3| DEF 3| HP 10| 250 MANA| 'As the dust settles... It moves on.'"; //will gain a dmg and hp boost that stacks if you go to the next encounter right away
     //you CANNOT buy anything from the shop, however you gain +2 atk and +2 def after EVERY fight, and 2x rewards. this means you farm small battles to bassicaly heal yourself
     cout << endl << "Enter your desired class:";
     cin >> playerclass;
@@ -181,6 +185,7 @@ int monstermax = 1;
 int g_reward = 1;
 int mana_reward = 1;
 int hp_reward = 1;
+int exp_reward = 1;
 int battleon = 1;
 int option = 1;
 
@@ -189,6 +194,9 @@ int randesc = 1;
 int itemselected = 1;
 int randatkm = 1;
 
+int violencemeter = 1;
+int antiviolence = 1;
+
     system("cls");
     srand(time(0));
     monsternum = rand() % 3 + 1;
@@ -196,45 +204,34 @@ int randatkm = 1;
     switch(monsternum){ //setting statistics of monster depending on world from weakest to strongest
 case 1:
     srand(time(0));
-    monsterhp = rand() % monstermax + 1;
-    monsterhp = monsterhp*6;
-    monsteratk = rand() % monstermax + 1;
-    g_reward = rand() % monstermax + 1;
-    g_reward = g_reward*20;
-    mana_reward = rand() % monstermax + 1;
-    mana_reward = mana_reward*10;
-    hp_reward = rand() % monstermax + 1;
-    hp_reward = hp_reward*10;
+    monsterhp = monstermax*6;
+    monsteratk = monstermax;
+    g_reward = monstermax*20;
+    mana_reward = monstermax*10;
+    hp_reward = monstermax*10;
+    exp_reward = monstermax*10;
     monstercurrenthp = monsterhp;
     monster = "weak monster.";
     break;
 case 2:
     srand(time(0));
-    monsterhp = rand() % monstermax + 1;
-    monsterhp = monsterhp*12;
-    monsteratk = rand() % monstermax + 1;
-    monsteratk = monsteratk*2;
-    g_reward = rand() % monstermax + 1;
-    g_reward = g_reward*30;
-    mana_reward = rand() % monstermax + 1;
-    mana_reward = mana_reward*20;
-    hp_reward = rand() % monstermax + 1;
-    hp_reward = hp_reward*20;
+    monsterhp = monstermax*12;
+    monsteratk = monstermax*2;
+    g_reward = monstermax*30;
+    mana_reward = monstermax*20;
+    hp_reward = monstermax*20;
+    exp_reward = monstermax*20;
     monstercurrenthp = monsterhp;
     monster = "strong monster.";
     break;
 case 3:
     srand(time(0));
-    monsterhp = rand() % monstermax + 1;
-    monsterhp = monsterhp*24;
-    monsteratk = rand() % monstermax + 1;
-    monsteratk = monsteratk*3;
-    g_reward = rand() % monstermax + 1;
-    g_reward = g_reward*40;
-    mana_reward = rand() % monstermax + 1;
-    mana_reward = mana_reward*30;
-    hp_reward = rand() % monstermax + 1;
-    hp_reward = hp_reward*30;
+    monsterhp = monstermax*24;
+    monsteratk = monstermax*3;
+    g_reward = monstermax*40;
+    mana_reward = monstermax*30;
+    hp_reward = monstermax*30;
+    exp_reward = monstermax*30;
     monstercurrenthp = monsterhp;
     monster = "very strong monster.";
     break;
@@ -254,10 +251,14 @@ default:
         cout << endl << "HP | " << hp << "/" << maxhp <<  endl;
         cout << endl << "MANA | " << mana << "/" << maxmana <<  endl;
         cout << endl << "What do you do?" << endl;
+        if(playerclass == 3){
+            cout << endl << "VIOLENCE METER | " << violencemeter << endl;
+        }
     cout << endl << "| 1=FIGHT | 2=ITEM | 3=MANA | 4=ESCAPE |" << endl;
     cin >> option;
         switch(option){
     case 1:{
+        if(playerclass == 1 || playerclass == 2 || playerclass == 4){
         randatk = rand() % atk + 1;
         cout << endl << "You dealt: " << randatk << " damage." << endl;
         monstercurrenthp = monstercurrenthp - randatk;
@@ -275,6 +276,50 @@ default:
         cout << endl << "It dealt: " << randatkm2 << " damage." << endl;
         hp = hp - randatkm2;
         cout << endl << "You have: " << hp << "/" << maxhp << " HP" << endl;
+        // MECHATRON ONLY
+        if(playerclass == 2){
+            for(int j = 0; j<=6; j++){
+                if(inventory[j][6] == "3"){
+                    system("pause");
+                    cout << endl << "Your robot " << inventory[j][0] << " then suddenly strikes!" << endl;
+                    int randdmg = stoi(inventory[j][1]);
+                    randatk = rand() % randdmg + 1;
+                    cout << endl << "It dealt: " << randatk << " damage." << endl;
+                    monstercurrenthp = monstercurrenthp - randatk;
+                    cout << endl << "The monster has: " << monstercurrenthp << "/" << monsterhp << " HP" << endl;
+                }
+            }
+        }
+        // MECHATRON ONLY
+        }else{ //PEACEBRINGER ONLY
+        randatk = rand() % violencemeter + 1;
+        violencemeter = violencemeter + randatk;
+        if(violencemeter > 15){
+            antiviolence = antiviolence*2;
+            violencemeter = violencemeter - antiviolence;
+        }
+        if(violencemeter <= 0){
+            violencemeter = 0;
+        }
+        violencemeter++;
+        cout << endl << "You dealt: " << randatk << " damage." << endl;
+        monstercurrenthp = monstercurrenthp - randatk;
+        cout << endl << "The monster has: " << monstercurrenthp << "/" << monsterhp << " HP" << endl;
+        system("pause");
+
+        randatkm = rand() % monsteratk + 1;
+        randatkm = randatkm + 4;
+        randatkm * monsteratk;
+        int randatkm2 = 0;
+        randatkm2 = randatkm - def;
+        if(randatkm2 < 0){
+            randatkm2 = 0;
+        }
+        cout << endl << "It dealt: " << randatkm2 << " damage." << endl;
+        hp = hp - randatkm2;
+        cout << endl << "You have: " << hp << "/" << maxhp << " HP" << endl;
+        } // PEACEBRINGER ONLY
+
         system("pause");
         system("cls");
     break;
@@ -285,26 +330,64 @@ default:
     }
     case 3:{
         if(mana >= 1){
-        cout << endl << "State how much mana you want to use from 1 to 100." << endl;
-        cout << endl << "The closer to 100 you are, the less of a chance you have to miss." << endl;
+        cout << endl << "State how much mana you want to use from 10 to 100." << endl;
+        cout << endl << "The closer to 100 you are, the less of a chance you have to fail your spell." << endl;
         int manachance = 0;
         cin >> manachance;
-        int manachanceanti = 101 - manachance;
+        mana = mana - manachance;
         int manachancehit = 0;
         manachancehit = rand() % manachance + 1;
-        if(manachancehit <= 15){
+
+        if(manachancehit >= 10){
         randatk = rand() % 10 + 1;
         if(randatk <= 5){
             randatk = 5;
         }
-        mana = mana - manachance;
         if(mana <= 0){
             mana = 0;
         }
+
+        if(playerclass == 3){
+        violencemeter = violencemeter+randatk;
+        if(violencemeter > 15){
+            antiviolence = antiviolence*2;
+            violencemeter = violencemeter - antiviolence;
+        }
+        if(violencemeter <= 0){
+            violencemeter = 0;
+        }
+        violencemeter++;
+        }
+
         randatk * manaBOOST;
         cout << endl << "You dealt: " << randatk << " damage." << endl;
         monstercurrenthp = monstercurrenthp - randatk;
         cout << endl << "The monster has: " << monstercurrenthp << "/" << monsterhp << " HP" << endl;
+        }else{
+        cout << endl << "The spell failed." << endl;
+
+        randatk = 1;
+        if(mana <= 0){
+            mana = 0;
+        }
+
+        if(playerclass == 3){
+        violencemeter = violencemeter+randatk;
+        if(violencemeter > 15){
+            antiviolence = antiviolence*2;
+            violencemeter = violencemeter - antiviolence;
+        }
+        if(violencemeter <= 0){
+            violencemeter = 0;
+        }
+        violencemeter++;
+        }
+
+        randatk * manaBOOST;
+        cout << endl << "You dealt: " << randatk << " damage." << endl;
+        monstercurrenthp = monstercurrenthp - randatk;
+        cout << endl << "The monster has: " << monstercurrenthp << "/" << monsterhp << " HP" << endl;
+
         }
         system("pause");
 
@@ -320,8 +403,10 @@ default:
     break;
     }
     case 4:{
-        randesc = rand() % monstermax*100 + 1;
-        if(randesc <= 40){
+        randesc = rand() % monstermax + 1;
+        int randesc2 = randesc*100;
+        randesc = rand() % randesc2 + 1;
+        if(randesc <= 60){
             cout << endl << "You escaped and left empty handed!" << endl;
             battleon = 0;
             g_reward = 0;
@@ -346,16 +431,25 @@ default:
 }
 if(monstercurrenthp <= 0){
     monsteramount--;
+    if(playerclass == 4){
+        atk = atk + 3;
+    }
     if(monsteramount <= 0){
     battleon = 0;
     monsters = monsters - monsters_erased;
+    if(playerclass == 4){
+        hp_reward = hp_reward*2;
+        mana_reward = mana_reward*2;
+    }
     cout << endl << "You won! Your rewards are:" << endl;
     cout << endl << g_reward << " Gold." << endl;
     cout << endl << hp_reward << " Health." << endl;
-    if(playerclass >= 2){
-    cout << endl << mana_reward << " Mana." << endl;
+    cout << endl << exp_reward << " EXP." << endl;
     gold = gold + g_reward;
     hp = hp + hp_reward;
+    expcurrent = expcurrent + exp_reward;
+    if(playerclass >= 2){
+    cout << endl << mana_reward << " Mana." << endl;
     mana = mana + mana_reward;
     }
     if(hp > maxhp){
@@ -382,6 +476,15 @@ if(hp <= 0){
 void store(string inventory[6][7], int invsize, int gold, int worldprogress, int areaprogress){
 int inshop = 0;
 system("cls");
+if(playerclass == 4){
+        atk = 3;
+        cout << endl << "You have came to a spot nearby the shop to rest." << endl;
+        cout << endl << "You regained all your energy and health back at the cost of your power..." << endl;
+        hp = maxhp;
+        mana = maxmana;
+        system("pause");
+    }else{
+system("cls");
 cout << endl << "Welcome to the area " << areaprogress << " shop!" << endl;
 cout << endl << "GOLD | " << gold <<  endl;
 cout << endl << "ITEMS | VVV |" << endl;
@@ -398,7 +501,7 @@ cout << endl << "ITEMS | VVV |" << endl;
             }else if(TYPE == 1){
                 cout << " ATK: " << inventory[i][1] << " DEF: " << inventory[i][2];
             }else if(TYPE == 2){
-                cout << " ADDED MAX HP: " << inventory[i][2];
+                cout << " ADDED TO MAX: " << inventory[i][2];
             }
             }
             cout << endl;
@@ -407,16 +510,17 @@ cout << endl << "ITEMS | VVV |" << endl;
 cout << endl << "Do you wish to leave, or to buy? |2 (Remove) / 1 (Buy) / 0 (Leave)|" << endl;
 cout << endl << "!;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=;!" << endl;
 cin >> inshop;
+}
 while(inshop == 1 || inshop == 2){
 
     if(inshop == 1){
 switch(worldprogress){
 
-case 1:{ //WORLD 1 ITEMS
+case 2:{ //WORLD 2 ITEMS
 //7 statistics
-//1 = NAME/ 2=+ATK/ 3=+DEF/ 4=ISHEAL>0 THEN +HEAL/ 5=ISMANA>0 THEN +MANA/ 6=SLOT/ 7=TYPE (0=LISTS +MANA OR +HEAL OR BOTH USING IF ELSE, 1=LISTS ATK AND DEF, 2=+MAXHP(adds 20+maxhp upon use) )
-int prices[9] = {5, 8, 12, 20, 15, 10, 20, 30};
-string shopitem[8][7] = {
+//1 = NAME/ 2=+ATK/ 3=+DEF/ 4=ISHEAL>0 THEN +HEAL/ 5=ISMANA>0 THEN +MANA/ 6=SLOT/ 7=TYPE (0=LISTS +MANA OR +HEAL OR BOTH USING IF ELSE, 1=LISTS ATK AND DEF, 2=+MAXHP(adds 20+maxhp upon use), 3=only mechatron can buy it, 4=+MAXMANA+MANABOOST )
+int prices[11] = {5, 8, 12, 20, 15, 10, 20, 30, 30, 250};
+string shopitem[10][7] = {
         {"|Healing Potion|", "0", "0", "15", "0", "", "0"},
         {"|Mana Potion|", "0", "0", "0", "40", "", "0"},
         {"|Weak Helmet|", "0", "3", "0", "0", "", "1"},
@@ -424,7 +528,9 @@ string shopitem[8][7] = {
         {"|Weak Leggings|", "0", "5", "0", "0", "", "1"},
         {"|Weak Boots|", "0", "2", "0", "0", "", "1"},
         {"|Weak Weapon|", "8", "0", "0", "0", "", "1"},
-        {"|Health Crystal|", "0", "20", "0", "0", "", "2"}
+        {"|Health Crystal|", "0", "20", "0", "0", "", "2"},
+        {"|Mana Crystal|", "0", "3", "0", "0", "", "2"},
+        {"|MODITRON - MECHATRON ONLY|", "20", "0", "0", "0", "", "3"}
     };
 int currentitem = 0;
 cout << endl << "SHOP ITEMS | VVV |" << endl;
@@ -441,41 +547,75 @@ for(int i = 0; i+1<=prices[i]; i++){
             }else if(TYPE == 1){
                 cout << " ATK: " << shopitem[i][1] << " DEF: " << shopitem[i][2];
             }else if(TYPE == 2){
-                cout << " ADDED MAX HP: " << shopitem[i][2];
+                cout << " ADDED TO MAX: " << shopitem[i][2];
             }
             cout << endl;
         }
-    cout << endl << "Which item do you want to buy? (Insert from 1 to 9 to pick, insert anything else to cancel.)" << endl;
+    cout << endl << "Which item do you want to buy? (Insert from 1 to 10 to pick, insert anything else to cancel.)" << endl;
     cin >> currentitem;
     currentitem = currentitem-1;
-    if(currentitem >= 0 && currentitem <= 9 && gold >= prices[currentitem]){
+    if(currentitem >= 0 && currentitem <= 8 && gold >= prices[currentitem]){
         int slot = 0;
         cout << endl << "Buying: " << shopitem[currentitem][0] << " for " << prices[currentitem];
-        gold = gold - prices[currentitem];
-            if(currentitem != 7){
+            if(currentitem != 7 && currentitem != 8 && currentitem != 9){
         do{
         cout << endl << "Select which inventory slot to replace:" << endl;
         cin >> slot;
         }while(!(slot >= 1 && slot <= 6));
         slot--;
+        gold = gold - prices[currentitem];
         for(int j = 0; j<=6; j++){
         inventory[slot][j] = shopitem[currentitem][j];
         }
         int ATTACK = stoi(shopitem[currentitem][1]);
         int DEFENSE = stoi(shopitem[currentitem][2]);
         setstats(0, playerclass, slot, ATTACK, DEFENSE);
-            }else{
+                }else if(currentitem == 8){
             int DEFENSE = stoi(shopitem[currentitem][2]);
+            manaBOOST = manaBOOST + DEFENSE;
+            gold = gold - prices[currentitem];
+            cout << endl << "Mana DMG boosted by  " << DEFENSE << "!" << endl;
+            system("pause");
+            }else if (currentitem ==7) {
+            int DEFENSE = stoi(shopitem[currentitem][2]);
+            gold = gold - prices[currentitem];
             maxhp = maxhp + DEFENSE;
             cout << endl << "Max HP increased by " << DEFENSE << "!" << endl;
             system("pause");
             }
-        }else{
+        }else if(currentitem == 9 && gold >= prices[currentitem] && playerclass == 2){ //MECHATRON--------------------------
+            int hasrobot;
+            for(int j = 0; j<=6; j++){
+                if(inventory[j][6] == "3"){
+                    cout << endl << "You already have a robot. Discard it to add a new one." << endl;
+                    hasrobot = 1;
+                    system("pause");
+                }else{
+                    if(hasrobot != 1){
+                    hasrobot = 0;
+                    }
+                }
+                }
+                if(hasrobot == 0){
+                int slot = 0;
+                cout << endl << "Buying: " << shopitem[currentitem][0] << " for " << prices[currentitem];
+                gold = gold - prices[currentitem];
+                do{
+                cout << endl << "Select which inventory slot to replace:" << endl;
+                cin >> slot;
+                }while(!(slot >= 1 && slot <= 6));
+                slot--;
+                for(int j = 0; j<=6; j++){
+                inventory[slot][j] = shopitem[currentitem][j];
+                hasrobot = 0;
+                }
+                }
+            }else{
     cout << endl << "Buying cancelled!" << endl;
     system("pause");
     }
 }
-//WORLD 1 ITEMS
+//WORLD 2 ITEMS
 
 default:{
     break;
@@ -497,7 +637,7 @@ cout << endl << "ITEMS | VVV |" << endl;
             }else if(TYPE == 1){
                 cout << " ATK: " << inventory[i][1] << " DEF: " << inventory[i][2];
             }else if(TYPE == 2){
-                cout << " ADDED MAX HP: " << inventory[i][2];
+                cout << " ADDED TO MAX: " << inventory[i][2];
             }
             }
             cout << endl;
@@ -536,7 +676,7 @@ cout << endl << "ITEMS | VVV |" << endl;
             }else if(TYPE == 1){
                 cout << " ATK: " << inventory[i][1] << " DEF: " << inventory[i][2];
             }else if(TYPE == 2){
-                cout << " ADDED MAX HP: " << inventory[i][2];
+                cout << " ADDED TO MAX: " << inventory[i][2];
             }
             }
             cout << endl;
@@ -556,23 +696,25 @@ void goldfound(int &goldies, int random){
     cout << endl << "On your way, you found: " << random << " gold!" <<  endl;
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 void ingame(){
+    system("cls");
     cout << endl << "Before the story may begin, you must pick your class." << endl;
     cout << endl << "Please choose carefully as you will not be able to change it later." << endl;
     cout << endl << "Enter any number linked with the class you like." << endl;
     cout << endl << "CLASSES: SWORDSMAN, MECHATRON, PEACEBRINGER, DUSTSETTLER";
     cout << endl << "1|SWORDSMAN:| ATK 5| DEF 3| HP 20| NO MAGIC| 'Classic and reliable. Wields a simple sword.'"; //relies on you leveling up
-    cout << endl << "2|MECHATRON:| ATK 2| DEF 8| HP 15| NO MAGIC| 'Benefits heavily from his own inventions.'"; //relies heavily on shop
-    cout << endl << "3|PEACEBRINGER:| ATK 1| DEF 1| HP 50| 150 MANA| 'Peace brings him control.'"; //will roll better chances on his attacks the less hp the enemies have
-    cout << endl << "4|DUSTSETTLER:| ATK 3| DEF 3| HP 10| 250 MANA| 'As the dust settles... He moves on.'"; //will gain a dmg and hp boost that stacks if you go to the next encounter right away
+    cout << endl << "2|MECHATRON:| ATK 2| DEF 4| HP 15| NO MAGIC| 'Benefits heavily from inventions.'"; //relies heavily on shop (you defend and eat coins up till you can afford op items)
+    cout << endl << "3|PEACEBRINGER:| ATK 1| DEF 1| HP 50| 150 MANA| 'Violence brings it control.'"; //will roll better chances on his attacks the less hp the enemies have
+    cout << endl << "4|DUSTSETTLER:| ATK 3| DEF 3| HP 10| 250 MANA| 'As the dust settles... It moves on.'"; //will gain a dmg and hp boost that stacks if you go to the next encounter right away
     cout << endl << "Enter your desired class:";
     cin >> playerclass;
 
     setstats(1, playerclass,0 ,0 ,0);
 
-    monsters = 1;
-    miniboss = 0;
-    boss = 0;
+    monsters = 4;
+
     system("pause"); //ceka na input klavesnice
     system("cls"); // smaze text z cmd
     cout << endl << "STORY:";
@@ -619,6 +761,7 @@ void ingame(){
     cout << endl << "Your only way out is through here." << endl;
     system("pause");
     cout << endl << "And so... You march on." << endl;
+
     system("pause");
     system("cls");
     int goback = 0;
@@ -631,33 +774,19 @@ void ingame(){
         cout << endl << "GOLD | " << gold <<  endl;
         cout << endl << "HP | " << hp << "/" << maxhp <<  endl;
         cout << endl << "MANA | " << mana << "/" << maxmana <<  endl;
+        if(playerclass == 1){
+        cout << endl << "EXP| " << expcurrent;
+        cout << endl << "EXP NEEDED| " << expneed;
         cout << endl << "LV | " << LV <<  endl;
+        }
         cout << endl << "ITEMS | VVV |" << endl;
         for(int i = 0; i+1<=invsize; i++){
             cout << "Item " << i +1 << ": " << inventory[i][0] << endl;
         }
-
+//---------------------------------------------scenarios
         srand(time(0));  // inicializace generatoru nahodných cisel
         randomevent = rand() % 100 + 1;  // cisla od 0 až do 100
         system("pause");
-        if(currentmap <= maxmap){
-            currentmap++;
-        }else if (currentmap >= maxmap && monsters >= 0){
-        cout << endl << "You may have made it to the end, but there are still " << monsters << " monsters blocking your way." << endl;
-        cout << endl << "You decide to run back to not get overwhelmed and beat them off one by one." << endl;
-        currentmap = 0;
-        system("pause");
-        }
-        if(currentmap >= maxmap && monsters <= 0){
-            cout << endl << "You made it to the end and all monsters have been wiped, however you may choose to continue to grind here if you wish." << endl;
-            cout << endl << "|1 Go Back / 2 Continue In Your Journey|" << endl;
-            do{
-            cin >> goback;
-            }while(!(goback == 1 || goback == 2));
-            if(goback == 1){
-            currentmap = 0;
-            }
-        }
 
         if(randomevent >= 0 && randomevent <= 30){
             battle();
@@ -672,13 +801,45 @@ void ingame(){
             system("pause");
             system("cls");
         }
-    }while(!(currentmap == maxmap && hp >= 1 && monsters <= 0 && goback == 2));
+//------------------------------------------------map check
+        if(currentmap < maxmap-1){
+            currentmap++;
+        }else if (currentmap >= maxmap-1 && monsters >= 0){
+        cout << endl << "You may have made it to the end, but there are still " << monsters << " monsters blocking your way." << endl;
+        cout << endl << "You decide to run back to not get overwhelmed and beat them off one by one." << endl;
+        currentmap = 0;
+        system("pause");
+        }
+        if(currentmap >= maxmap-1 && monsters <= 0){
+            cout << endl << "You made it to the end and all monsters have been wiped, however you may choose to continue to grind here if you wish." << endl;
+            cout << endl << "|1 Go Back / 2 Continue In Your Journey|" << endl;
+            do{
+            cin >> goback;
+            }while(!(goback == 1 || goback == 2));
+            if(goback == 1){
+            currentmap = 0;
+            }
+        }
+        if(expcurrent >= expneed && playerclass == 1){
+            LV++;
+            atk++;
+            def++;
+            expcurrent = expcurrent - expneed;
+            expneed = expneed*2;
+        }
+
+    }while(currentmap != maxmap && hp >= 1 && goback != 2);
     system("cls");
     if(hp <= 0){
-        cout << endl << "GAME OVER.";
+        system("cls");
+        cout << endl << "GAME OVER." << endl;
+        system("pause");
+        ingame();
     }
+    //SNOWDIN ----------------------------------------------------------------------- SNOWDIN ------------------------------------------------------------------- SNOWDIN
     worldprogress++;
     areaprogress++;
+    monsters = 6;
     goback = 0;
     cout << endl << "In the distance, you see a small village." << endl;
     system("pause");
@@ -699,6 +860,104 @@ void ingame(){
     cout << endl << "Michael: Honestly quite the miracle, i didn't believe it would work either but hey, im alive, so that's nice." << endl;
     system("pause");
     store(inventory, invsize, gold, worldprogress, areaprogress);
+    cout << endl << "And so... You ventured on into the unknown." << endl;
+    system("pause");
+    cout << endl << "However, you feel as if troubles aren't over just yet." << endl;
+    system("pause");
+    cout << endl << "From the distance you can see a bunch of vague figures, they seem a lot stronger..." << endl;
+    system("pause");
+    cout << endl << "At least you can return to the shop now anytime your low on supplies." << endl;
+    system("pause");
+    cout << endl << "Either way, you figure it's about time you'd get moving." << endl;
+    system("pause");
+    cout << endl << "And move on to..." << endl;
+    system("pause");
+    system("cls");
+    cout << endl;
+    cout << endl << "ZONE 2 - SNOWDIN";
+    currentmap = 0;
+    maxmap = 50;
+    cout << endl;
+    system("pause");
+    cout << endl << "You stumble upon a snowy forest, filled with occasional housing and structures here and there." << endl;
+    system("pause");
+    cout << endl << "Despite the cold empty tone it gave you before, you start to feel like this part of the underground is more alive than the last." << endl;
+    system("pause");
+    cout << endl << "Either way, you walk along the snowy but walked out path infront of you, and continue on in your journey." << endl;
+    system("pause");
+    system("cls");
+    goback = 0;
+    do{ // cykl chozeni
+        cout << endl << "You continue walking through. Your current progress is: " << currentmap << "/" << maxmap << "." <<  endl;
+        cout << endl << "Press A to open shop" <<  endl;
+        cout << endl << "Your current statistics are:" <<  endl;
+        cout << endl << "WORLD | " << worldprogress <<  endl;
+        cout << endl << "ATK | " << atk <<  endl;
+        cout << endl << "DEF | " << def <<  endl;
+        cout << endl << "GOLD | " << gold <<  endl;
+        cout << endl << "HP | " << hp << "/" << maxhp <<  endl;
+        cout << endl << "MANA | " << mana << "/" << maxmana <<  endl;
+        cout << endl << "EXP| " << expcurrent;
+        cout << endl << "EXP NEEDED| " << expneed;
+        cout << endl << "LV | " << LV <<  endl;
+        cout << endl << "ITEMS | VVV |" << endl;
+        for(int i = 0; i+1<=invsize; i++){
+            cout << "Item " << i +1 << ": " << inventory[i][0] << endl;
+        }
+//---------------------------------------------scenarios
+        srand(time(0));  // inicializace generatoru nahodných cisel
+        randomevent = rand() % 100 + 1;  // cisla od 0 až do 100
+        system("pause");
+
+        if(randomevent >= 0 && randomevent <= 30){
+            battle();
+        }
+        if(randomevent > 30 && randomevent <= 80){
+            cout << endl << "Nothing interesting occured." << endl;
+            system("pause");
+            system("cls");
+        }
+        if(randomevent > 80 && randomevent <= 100){
+            goldfound(gold, emptyy);
+            system("pause");
+            system("cls");
+        }
+//------------------------------------------------map check
+        if(currentmap < maxmap-1){
+            currentmap++;
+        }else if (currentmap >= maxmap-1 && monsters >= 0){
+        cout << endl << "You may have made it to the end, but there are still " << monsters << " monsters blocking your way." << endl;
+        cout << endl << "You decide to run back to not get overwhelmed and beat them off one by one." << endl;
+        currentmap = 0;
+        system("pause");
+        }
+        if(currentmap >= maxmap-1 && monsters <= 0){
+            cout << endl << "You made it to the end and all monsters have been wiped, however you may choose to continue to grind here if you wish." << endl;
+            cout << endl << "|1 Go Back / 2 Continue In Your Journey|" << endl;
+            do{
+            cin >> goback;
+            }while(!(goback == 1 || goback == 2));
+            if(goback == 1){
+            currentmap = 0;
+            }
+        }
+        if(expcurrent >= expneed && playerclass == 1){
+            LV++;
+            atk++;
+            def++;
+            expcurrent = expcurrent - expneed;
+            expneed = expneed*2;
+        }
+
+    }while(currentmap != maxmap && hp >= 1 && goback != 2);
+    system("cls");
+    if(hp <= 0){
+        system("cls");
+        cout << endl << "GAME OVER." << endl;
+        system("pause");
+        ingame();
+    }
+    cout << endl << "DEMO END";
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
