@@ -1336,6 +1336,37 @@ void goldfound(int &goldies, int random){
 
 
 void ingame(){
+begingame = "";
+playerclass = 0;
+monsters = 4;
+village = 2;
+
+atk = 0;
+def = 0;
+gold = 0;
+maxhp = 20;
+hp = maxhp;
+maxmana = 20;
+mana = maxmana;
+manaBOOST = 3;
+worldprogress = 1;
+areaprogress = 1;
+currentmap = 1;
+maxmap = 0;
+randomevent = 0;
+expcurrent = 0;
+expneed = 4;
+LV = 0;
+
+int atkboost = 0;
+string inventory[6][7]= {
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""},
+    {"", "", "", "", "", "", ""}
+};
     system("cls");
     cout << endl << "Before the story may begin, you must pick your class." << endl;
     cout << endl << "Please choose carefully as you will not be able to change it later." << endl;
