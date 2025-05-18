@@ -707,6 +707,7 @@ int randatkm = 1;
 
 int violencemeter = 1;
 int antiviolence = 1;
+int randdialogue = 1;
 
     system("cls");
     srand(time(0));
@@ -767,6 +768,32 @@ default:
         if(playerclass == 3){
             cout << endl << "VIOLENCE METER | " << violencemeter << endl;
         }
+
+        randdialogue = rand() % 5 + 1;
+        cout << endl << "|--------------------------------|";
+        switch(randdialogue){
+        case 1:
+        cout << endl << "The monster laughs at you." << endl;
+        break;
+
+        case 2:
+        cout << endl << "The monster fears you." << endl;
+        break;
+
+        case 3:
+        cout << endl << "The monster cries." << endl;
+        break;
+
+        case 4:
+        cout << endl << "The monster prays for mercy." << endl;
+        break;
+
+        case 5:
+        cout << endl << "The monster wants blood." << endl;
+        break;
+        }
+        cout << "|--------------------------------|" << endl;
+
         cout << endl << "What do you do?" << endl;
     cout << endl << "| 1=FIGHT | 2=ITEM | 3=MANA | 4=ESCAPE |" << endl;
     cin >> option;
